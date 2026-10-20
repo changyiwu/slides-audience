@@ -57,7 +57,7 @@ service cloud.firestore {
     // 2026-08-05：移除 /words/ 規則。那是 Cloudify 文字雲正式站（index.html／app.js）
     // 用的頂層集合，該站與集合都已刪除，功能由下方 /clouds/ 的獨立文字雲頁取代。
 
-    // ---------- word-cloud-page 技能產生的文字雲頁 ----------
+    // ---------- audience-wordcloud 技能產生的文字雲頁 ----------
     // 每產生一份文字雲頁就給它一個 cloudId，資料各自落在自己的子集合，互不干擾。
     // 欄位規格沿用已刪除的舊 /words/（同一份程式碼改路徑而已）；共用 config/admin，
     // 所以一組管理密碼可以清空任何一份文字雲。
@@ -85,7 +85,7 @@ service cloud.firestore {
         && (resource.data.uid == request.auth.uid || isAdmin());
     }
 
-    // ---------- poll-page 技能產生的投票頁 ----------
+    // ---------- audience-poll 技能產生的投票頁 ----------
     // 一人一題一份文件（ID = <uid>_<題號>）：改投票是覆寫自己那份，天然防灌票，
     // 也不會有多人搶寫同一份文件的熱點。delete 允許 isAdmin()，讓講者能一鍵重置票數。
     match /polls/{pollId}/votes/{ballot} {
@@ -110,7 +110,7 @@ service cloud.firestore {
     }
 
     // 2026-08-05：移除 /decks/{slug}/wordcloud 與 /decks/{slug}/votes 兩條規則。
-    // 那是 html-slide-builder 簡報內嵌互動元件用的路徑，該功能已整組移除，
+    // 那是 slides-html 簡報內嵌互動元件用的路徑，該功能已整組移除，
     // 改用上方 /clouds/ 與 /polls/ 的獨立互動頁；已確認沒有任何簡報還在用。
   }
 }

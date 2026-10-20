@@ -1,4 +1,4 @@
-# Firestore 設定與安全規則（word-cloud-page）
+# Firestore 設定與安全規則（audience-wordcloud）
 
 本檔是「資料庫這一側」的唯一參考。頁面產生流程見 `../SKILL.md`。
 
@@ -16,7 +16,7 @@
 
 ```
 clouds/<cloudId>/words/<uid>_<詞>      ← 本技能產生的文字雲頁 ★
-polls/<pollId>/votes/<uid>_<題號>      ← poll-page 技能產生的投票頁
+polls/<pollId>/votes/<uid>_<題號>      ← audience-poll 技能產生的投票頁
 ```
 
 **這兩條規則都不能互刪。**
@@ -34,7 +34,7 @@ polls/<pollId>/votes/<uid>_<題號>      ← poll-page 技能產生的投票頁
 
 ## 必須部署的規則
 
-以下區塊必須存在於 `firestore.rules`（本技能的來源專案 `interactive-web-builder` 已含）。它依賴同檔案裡的 `isSignedIn()` 與 `isAdmin()` 兩個共用函式：
+以下區塊必須存在於 `firestore.rules`（本技能的來源專案 `slides-audience` 已含）。它依賴同檔案裡的 `isSignedIn()` 與 `isAdmin()` 兩個共用函式：
 
 ```js
 // 管理者授權：持有 admin_auth 登入憑證即為管理者。
@@ -89,10 +89,10 @@ match /clouds/{cloudId}/words/{word} {
 - **`hasOnly()` 與長度上限是防灌爆的關鍵**——沒有它，任何人都能往單份文件塞到 1 MiB 上限。改任一邊都要同步改頁面裡的 `MAX_WORD_LENGTH`（100）。
 - **文件 ID 固定為 `<uid>_<詞>`**，且規則會驗證 `uid + '_' + text == word`。同一人重複送同一個詞只會累加自己那份，「改別人的資料」在規則層就不可能。
 - `timestamp == request.time` 逼前端用 `serverTimestamp()`，客戶端無法偽造時間。
-- **管理密碼是整個專案共用的一組**（`config/admin`），一組密碼可以管理任何一份文字雲或投票。要換密碼跑 `interactive-web-builder/tools/set-admin-password.mjs`，把輸出的雜湊填進 `config/admin.passwordHash`。
+- **管理密碼是整個專案共用的一組**（`config/admin`），一組密碼可以管理任何一份文字雲或投票。要換密碼跑 `slides-audience/tools/set-admin-password.mjs`，把輸出的雜湊填進 `config/admin.passwordHash`。
 - **管理者的刪除權來自 `isAdmin()`，範圍是整個 `delete`**：登入後不只能清空全部，也能刪掉任何一則別人送出的字詞（頁面上就是排行榜每一列的垃圾桶）。憑證文件存活期間才有效，登出／重新整理就沒了。
 
-部署方式（在 `interactive-web-builder` 專案目錄）：
+部署方式（在 `slides-audience` 專案目錄）：
 
 ```bash
 firebase deploy --only firestore:rules

@@ -1,5 +1,5 @@
 ---
-name: poll-page
+name: audience-poll
 description: |
   產生一份可獨立部署的「即時投票網頁」：給定題目與選項，聽眾用手機開頁面投票，票數透過 Firebase Firestore 即時同步，同步畫成統計圖表（圓餅圖／長條圖／折線圖／雷達圖，現場可切換）。
 
@@ -11,7 +11,7 @@ description: |
 
   當使用者說「做一個投票網頁」「幫我做即時投票」「簡報要放投票讓學生掃 QR」「課堂即時民調」「做一個問卷投票頁看即時圓餅圖」「投票結果要有統計圖表」，或要求任何觀眾即時選擇→匯集成圖表的頁面時，使用此技能。
 
-  不要用於：需要複選、開放式問答、記名問卷或計分測驗的情境。（簡報內嵌的小型投票元件已於 2026-08-05 從 html-slide-builder 移除，統一改用本技能產生獨立頁。）
+  不要用於：需要複選、開放式問答、記名問卷或計分測驗的情境。（簡報內嵌的小型投票元件已於 2026-08-05 從 html-slides 移除，統一改用本技能產生獨立頁。）
 ---
 
 # 即時投票網頁產生器
@@ -20,7 +20,7 @@ description: |
 
 產出物是**一個 `.html` 檔**，不依賴任何建置流程，丟進任何靜態網站空間（GitHub Pages 最常用）就能跑。
 
-想要的是「聽眾輸入字詞、匯集成文字雲」而不是投票，改用 `word-cloud-page` 技能。
+想要的是「聽眾輸入字詞、匯集成文字雲」而不是投票，改用 `audience-wordcloud` 技能。
 
 ---
 
@@ -30,7 +30,7 @@ description: |
 
 | 項目 | 怎麼確認 | 沒到位的處理 |
 |------|---------|-------------|
-| 安全規則已含 `match /polls/{pollId}/votes/{ballot}` | 讀 `interactive-web-builder/firestore.rules` 或 Firebase Console → Firestore → 規則 | 見 `references/firestore-setup.md`，補上並部署 |
+| 安全規則已含 `match /polls/{pollId}/votes/{ballot}` | 讀 `slides-audience/firestore.rules` 或 Firebase Console → Firestore → 規則 | 見 `references/firestore-setup.md`，補上並部署 |
 | 安全規則的 `/admin_auth/` 寫入條件已含 `== get(config/admin).data.passwordHash` | 同上 | 沒有這一段，**管理者登入會一律成功**（連錯的密碼也是），只是登入後重置票數會失敗。見 `references/firestore-setup.md` |
 | Firebase 專案已啟用匿名登入 | Console → Authentication → Sign-in method → Anonymous | 開啟它 |
 | 部署網域已註冊在 reCAPTCHA／App Check／API key referrer | 部署到 `changyiwu.github.io` 就已經涵蓋 | 換新網域見 `references/firestore-setup.md` |
@@ -45,7 +45,7 @@ description: |
 | `PAGE_TITLE` | 頁面標題 | `課後回饋投票` |
 | `INTRO` | 一句話說明，給聽眾看 | `請針對下面兩題各投一票，結果會即時更新。` |
 | `QUESTIONS` | 題目陣列，見下方格式 | — |
-| 輸出位置 | 檔案要放進哪個 repo 的哪個路徑 | `html-slide-builder/output/ai_workshop/poll.html` |
+| 輸出位置 | 檔案要放進哪個 repo 的哪個路徑 | `slides-html/output/ai_workshop/poll.html` |
 
 ### QUESTIONS 格式
 
@@ -184,7 +184,7 @@ commit 進目標 repo 並 push，等 GitHub Pages 部署完成，取得正式網
 - **複選**：安全規則的一份票據只存一個 `option`，文件 ID 綁死 `<uid>_<題號>`。要複選得改資料模型與規則，不是改頁面就好
 - **記名／限制身分**：用的是匿名登入，同一個人換瀏覽器就是另一個人。不適合需要「一人只能投一次且擋得住有心人」的正式選舉
 - **時間軸／投票歷史**：一人一題只有一份文件，改投票就是覆寫，只留最後一次的時間。因此畫不出「票數隨時間累積」的趨勢圖，四種圖表的橫軸一律是選項
-- **問答／填空**：那是 `word-cloud-page` 技能的守備範圍
+- **問答／填空**：那是 `audience-wordcloud` 技能的守備範圍
 
 ---
 

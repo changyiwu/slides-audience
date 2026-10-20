@@ -1,4 +1,4 @@
-# Firestore 設定與安全規則（poll-page）
+# Firestore 設定與安全規則（audience-poll）
 
 本檔是「資料庫這一側」的唯一參考。頁面產生流程見 `../SKILL.md`。
 
@@ -15,14 +15,14 @@
 同一個專案目前有兩組互相隔離的資料，**規則彼此都不能互刪**：
 
 ```
-clouds/<cloudId>/words/<uid>_<詞>      ← word-cloud-page 技能產生的文字雲頁
+clouds/<cloudId>/words/<uid>_<詞>      ← audience-wordcloud 技能產生的文字雲頁
 polls/<pollId>/votes/<uid>_<題號>      ← 本技能產生的投票頁 ★
 ```
 
 已刪除、不要救回來的歷史路徑（在舊文件或舊簡報看到不代表還要用）：
 
-- `words/<uid>_<詞>`：Cloudify 文字雲正式站的頂層集合，站與集合已於 2026-08-05 一起刪除，功能由 word-cloud-page 技能取代
-- `decks/<slug>/votes/`：html-slide-builder 簡報內嵌投票用的，該功能已整組移除、規則也已刪除。本技能的 `/polls/` 與它的差別在於 delete 允許 `isAdmin()`，講者登入後才能重置票數
+- `words/<uid>_<詞>`：Cloudify 文字雲正式站的頂層集合，站與集合已於 2026-08-05 一起刪除，功能由 audience-wordcloud 技能取代
+- `decks/<slug>/votes/`：slides-html 簡報內嵌投票用的，該功能已整組移除、規則也已刪除。本技能的 `/polls/` 與它的差別在於 delete 允許 `isAdmin()`，講者登入後才能重置票數
 
 ## 為什麼是子集合，不是「每份新開一個 collection」
 
@@ -32,7 +32,7 @@ polls/<pollId>/votes/<uid>_<題號>      ← 本技能產生的投票頁 ★
 
 ## 必須部署的規則
 
-依賴同檔案裡的 `isSignedIn()` 與 `isAdmin()` 兩個共用函式（定義見 `interactive-web-builder/firestore.rules`），以及登入憑證那條規則：
+依賴同檔案裡的 `isSignedIn()` 與 `isAdmin()` 兩個共用函式（定義見 `slides-audience/firestore.rules`），以及登入憑證那條規則：
 
 ```js
 // ⚠️ 登入憑證：寫入時就比對 config/admin，密碼錯誤的雜湊根本寫不進來，
@@ -79,9 +79,9 @@ match /polls/{pollId}/votes/{ballot} {
 - **文件 ID 固定為 `<uid>_<題號>`**，且規則驗證 `uid + '_' + question == ballot`。一人一題只會有一份文件，改投票是覆寫自己那份——**灌票、改別人的票在規則層就不可能**，也不會有多人搶寫同一份文件的熱點（單一文件持續寫入建議上限約每秒 1 次）。
 - **`hasOnly()` 與長度上限是防灌爆的關鍵**——沒有它，任何人都能往單份文件塞到 1 MiB 上限。題目 id 與選項 id 的 40 字上限與頁面設定必須一致。
 - `updated_at == request.time` 逼前端用 `serverTimestamp()`，客戶端無法偽造時間。
-- **管理密碼是整個專案共用的一組**（`config/admin`），一組密碼可以管理任何一份投票或文字雲。要換密碼跑 `interactive-web-builder/tools/set-admin-password.mjs`，把輸出的雜湊填進 `config/admin.passwordHash`。
+- **管理密碼是整個專案共用的一組**（`config/admin`），一組密碼可以管理任何一份投票或文字雲。要換密碼跑 `slides-audience/tools/set-admin-password.mjs`，把輸出的雜湊填進 `config/admin.passwordHash`。
 
-部署方式（在 `interactive-web-builder` 專案目錄）：
+部署方式（在 `slides-audience` 專案目錄）：
 
 ```bash
 firebase deploy --only firestore:rules

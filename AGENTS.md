@@ -1,17 +1,17 @@
-# interactive-web-builder（專案藍圖）
+# slides-audience（專案藍圖）
 
 > 本檔為跨 Agent 通用的專案藍圖（AGENTS.md 開放標準）。任何 Agent 的每個 session 都應先讀本檔＋`handoff.md`。
 >
 > 本專案原名 `online-word-cloud`，2026-08-05 因範圍擴大為「聽眾即時互動網頁的製作」而更名。
 
 ## 專案簡介
-製作聽眾即時互動網頁的**技能倉庫**。核心是 `skills/` 底下兩個跨專案技能：`word-cloud-page`（文字雲頁）與 `poll-page`（投票頁＋統計圖表），給定參數就產生一份可獨立部署的單檔 HTML，供其他專案（例如 `html-slide-builder` 的簡報）放 QR Code 連過去。
+製作聽眾即時互動網頁的**技能倉庫**。核心是 `skills/` 底下兩個跨專案技能：`audience-wordcloud`（文字雲頁）與 `audience-poll`（投票頁＋統計圖表），給定參數就產生一份可獨立部署的單檔 HTML，供其他專案（例如 `slides-html` 的簡報）放 QR Code 連過去。
 
 **產出的互動頁放在呼叫端專案的資料夾**，本 repo 只留模板；根目錄的 `wordcloud.html`／`poll.html` 是本 repo 自己的示範／測試頁，不是給別人複製的正本。
 
 `firestore.rules` 是所有互動頁共用的安全規則正本（Firebase 專案 `word-cloud-c0bfe`），兩條路徑各走各的。
 
-> **2026-08-05：原本的 Cloudify 文字雲正式站（`index.html`／`index.css`／`app.js`／`assets/`）已整組刪除，`words` 集合也已清空刪除。**功能完全被 `word-cloud-page` 技能取代——後者能開無限份、彼此隔離，正式站那份單一固定的文字雲沒有存在必要。不要把它救回來。
+> **2026-08-05：原本的 Cloudify 文字雲正式站（`index.html`／`index.css`／`app.js`／`assets/`）已整組刪除，`words` 集合也已清空刪除。**功能完全被 `audience-wordcloud` 技能取代——後者能開無限份、彼此隔離，正式站那份單一固定的文字雲沒有存在必要。不要把它救回來。
 
 ## 關鍵時程
 - 2026-06-07：專案初始化與 GitHub Actions / GitHub Pages 上線部署
@@ -19,15 +19,15 @@
 - 2026-07-26：UI 與功能細節優化；新增 localhost 離線示範模式，解決本機連不到 Firebase 的開發困境
 - 2026-08-05：`firestore.rules` 新增 `/decks/` 區塊，把 Firebase 專案分享給 `html-slide-builder` 的簡報互動元件使用
 - 2026-08-05：Cloud Firestore 開啟 App Check 強制執行；Metrics 顯示 92% verified（38 筆中 3 筆 invalid 為自動化瀏覽器所致）
-- 2026-08-05：本專案的文字雲頁流程封裝成 `word-cloud-page` 技能，供其他專案產生獨立部署的文字雲頁；`firestore.rules` 新增 `/clouds/{cloudId}/words/` 區塊
-- 2026-08-05：新增 `poll-page` 技能（即時投票頁＋Chart.js 統計圖表）；`firestore.rules` 新增 `/polls/{pollId}/votes/` 區塊；技能改放在 `skills/<技能名>/`
+- 2026-08-05：本專案的文字雲頁流程封裝成 `audience-wordcloud` 技能，供其他專案產生獨立部署的文字雲頁；`firestore.rules` 新增 `/clouds/{cloudId}/words/` 區塊
+- 2026-08-05：新增 `audience-poll` 技能（即時投票頁＋Chart.js 統計圖表）；`firestore.rules` 新增 `/polls/{pollId}/votes/` 區塊；技能改放在 `skills/<技能名>/`
 - 2026-08-05：`html-slide-builder` 移除簡報內嵌的文字雲與投票，改呼叫本專案技能；`/decks/` 兩條規則隨之刪除；專案由 `online-word-cloud` 更名為 `interactive-web-builder`
 - 2026-08-05：刪除 Cloudify 文字雲正式站與 `words` 集合（38 筆），改由技能產生的獨立互動頁取代；根目錄放兩份示範頁 `wordcloud.html`／`poll.html`
 - 2026-08-05：兩個技能的正式路徑（`clouds/`、`polls/`）由使用者實測通過，兩個技能自此可正式使用
 - 2026-08-06：清除已刪除的頂層 `words` 集合在技能文件與規則註解裡的殘留；`NB-YI` 補裝兩個技能到四家全域技能目錄
 - 2026-08-06：兩個技能改為**管理者登入制**——移除人人可見的「一鍵刪除全部／一鍵重置投票」，改成右上角登入後才出現管理功能；文字雲的管理者可刪除任何一則字詞。`firestore.rules` 的 `/admin_auth/` 寫入條件加上與 `config/admin` 的雜湊比對，讓「寫得進去」等於「密碼正確」
-- 2026-08-30：兩個技能各自設計專屬 Logo（`agent-draw` 生成後後製），同一張圖同時作為頁首標誌與瀏覽器分頁圖標，以 base64 內嵌；`teaching-web` 的文字雲頁一併套用
-- 2026-09-07：文字雲算圖修正——「1 次」的詞不再固定 12px、修掉多乘一次的 dpr、`gridSize` 改成跟著最小字級走、開啟 `shrinkToFit`；畫布塞滿時不再默默丟掉排在後面的詞。技能模板、示範頁與 `teaching-web` 的文字雲頁三份同步
+- 2026-08-30：兩個技能各自設計專屬 Logo（`draw` 生成後後製），同一張圖同時作為頁首標誌與瀏覽器分頁圖標，以 base64 內嵌；`teach-math-web` 的文字雲頁一併套用
+- 2026-09-07：文字雲算圖修正——「1 次」的詞不再固定 12px、修掉多乘一次的 dpr、`gridSize` 改成跟著最小字級走、開啟 `shrinkToFit`；畫布塞滿時不再默默丟掉排在後面的詞。技能模板、示範頁與 `teach-math-web` 的文字雲頁三份同步
 
 ## 目標與路線圖
 - [x] 階段一：建立線上文字雲核心 HTML/CSS/JS 功能與視覺美化
@@ -40,14 +40,14 @@
 - [x] 階段八：新增 localhost 離線示範模式，讓 UI 迭代不必每次推上線
 - ~~階段九：把階段七、八的改動推上 GitHub Pages 實測正式路徑~~（正式站已刪除，作廢；那些 UI 改動已隨技能模板延續）
 - ~~階段十：正式站 UI 持續優化~~（正式站已刪除，作廢；要優化改動技能模板）
-- [x] 階段十一：把文字雲頁流程封裝成 `word-cloud-page` 技能，資料改走 `clouds/{cloudId}/words/` 子集合，一份規則涵蓋所有新產生的文字雲
-- [x] 階段十二：新增 `poll-page` 技能（`polls/{pollId}/votes/`），投票頁附即時圓餅／長條／折線／雷達圖表
+- [x] 階段十一：把文字雲頁流程封裝成 `audience-wordcloud` 技能，資料改走 `clouds/{cloudId}/words/` 子集合，一份規則涵蓋所有新產生的文字雲
+- [x] 階段十二：新增 `audience-poll` 技能（`polls/{pollId}/votes/`），投票頁附即時圓餅／長條／折線／雷達圖表
 - [x] 階段十三：兩個技能的正式 Firebase 路徑實測——`clouds/` 與 `polls/` 由使用者本人在一般瀏覽器實測通過
-- [x] 階段十四：兩個技能同步到各 agent 的全域技能目錄（`/sync-skills`），`html-slide-builder` 的四家副本一併更新
+- [x] 階段十四：兩個技能同步到各 agent 的全域技能目錄（`/skill-sync`），`html-slide-builder` 的四家副本一併更新
 - [x] 階段十五：清除 `words` 集合殘留（兩份 `references/firestore-setup.md`、`firestore.rules` 註解、根目錄未追蹤的正式站殘檔）
 - [x] 階段十六：兩個技能改為管理者登入制（登入後才有刪除入口；文字雲管理者可刪個別字詞），安全規則加上登入驗證條件
 - [ ] 階段十七：由使用者本人用一般瀏覽器實測登入／刪除個別字詞／清除全部（**部署前提已滿足**：階段十六的內容確認已在線上）
-- [x] 階段十八：兩個技能各自的 Logo 與瀏覽器分頁圖標，並套用到 `teaching-web` 的文字雲頁
+- [x] 階段十八：兩個技能各自的 Logo 與瀏覽器分頁圖標，並套用到 `teach-math-web` 的文字雲頁
 - [x] 階段十九：文字雲算圖修正——字級公式改為映射到 [30%, 100%]（並給絕對下限）、`baseWeight` 不再多乘一次 dpr、`gridSize` 跟著最小字級走、開 `shrinkToFit` 並依總墨水面積算全域縮放。實測 930×575 畫布放 500 個詞由漏畫 209 個變成 0 個
 
 ## 資料夾結構
@@ -67,8 +67,8 @@
 | 層級 | 平台 | 位置 | 讀取時機 |
 |------|------|------|---------|
 | L1 | 本地（GDrive） | `AGENTS.md`＋`handoff.md` | 每個 session |
-| L2 | GitHub | changyiwu/interactive-web-builder | 指定時 |
-| L3 | Obsidian | interactive-web-builder/專案工作流程.md | 有需要時 |
+| L2 | GitHub | changyiwu/slides-audience | 指定時 |
+| L3 | Obsidian | slides-audience/專案工作流程.md | 有需要時 |
 
 ## 三個檔案的職責（依「時效性」分家，不是依「詳細程度」）
 
@@ -98,14 +98,14 @@
 - **Firestore Emulator 需 Java 21 以上**：目前這台只有 Java 8，未升級前可用 Firebase MCP 的 `firebase_validate_security_rules` 做語法驗證，但不能宣稱已完成 Emulator 測試；不要把 Java 版本錯誤誤判成規則錯誤
 - **`deploy-pages` 顯示 failure／timeout 不代表內容沒上線。**實測（2026-08-30 回頭查 2026-08-06 那三次 run）：三次 run 全部 `failure`、`gh run list` 最後一次成功停在 `92a3312`，但線上頁面的內容其實已經是 `f79b1c7`——artifact 上傳成功後，Pages 後端仍可能在 workflow 判定失敗之後把部署完成。**判斷正式站到底是哪一版，一律 `curl` 線上頁面跟 `git show <sha>:<檔案>` 比對，不要看 workflow 結論**，否則會白白重跑部署、或誤以為某個階段還沒上線（上一版 handoff 就是這樣卡了 24 天）
 - **GitHub Pages 若在 artifact 上傳完成後卡於 `deploy-pages` 並 timeout，應重跑完整 `workflow_dispatch`，不要用 `gh run rerun --failed`**，否則可能撞到同名 artifact。若全新 run 仍連續卡在 deployment queue／in progress，停止快速重試並等待 Pages 後端恢復；不要為平台端排隊去修改 HTML 或縮小 repo
-- **`/decks/{slug}/...` 兩條規則已於 2026-08-05 刪除**（`html-slide-builder` 的簡報內嵌互動元件已整組移除，改呼叫本專案技能）。**不要因為在舊文件或舊簡報看到 `decks/` 就把規則加回來**——那些是歷史殘留，正確做法是改用 `clouds/` 或 `polls/` 的獨立互動頁
+- **`/decks/{slug}/...` 兩條規則已於 2026-08-05 刪除**（`slides-html` 的簡報內嵌互動元件已整組移除，改呼叫本專案技能）。**不要因為在舊文件或舊簡報看到 `decks/` 就把規則加回來**——那些是歷史殘留，正確做法是改用 `clouds/` 或 `polls/` 的獨立互動頁
 - **⚠️ `firestore.rules` 的 `/clouds/{cloudId}/words/` 與 `/polls/{pollId}/votes/` 兩個區塊是 `skills/` 底下兩個技能的生命線，不要刪。**技能每產生一份頁面就給一個 id，資料落在對應子集合；一條規則涵蓋全部，所以新增頁面不必改規則、不必再部署。刪掉會讓**所有已經發出去的文字雲頁／投票頁同時靜默失效**。規則裡的欄位規格（`hasOnly`、長度與次數上限）與 `skills/*/assets/*.html` 的對應常數必須一致，改一邊就要改另一邊
-- **每份互動頁的標誌以 base64 PNG 內嵌，同一張圖在 HTML 裡有兩份複本**：`<head>` 的 `<link rel="icon">`（瀏覽器分頁圖標）與頁首的 `<img class="logo-mark">`。換標誌時**兩處都要換**，只改一處會出現「分頁圖標和頁首標誌不一樣」的詭異狀態。內嵌是刻意的——單檔頁面不能依賴外部圖檔，換部署位置也不會破圖。母檔（512px PNG）在各技能的 `assets/logo.png`，由 `agent-draw` 生成後去角圓化、降到 180px 並量化成 128 色才內嵌（未量化的 180px 會讓每頁多 40KB）
-- **兩個技能模板是各自獨立的程式碼**（`word-cloud-page` 與 `poll-page` 同源但分家）。一邊修 bug 不會流到另一邊；屬於「兩邊都該有」的性質（例如安全性修正、App Check 初始化順序），要明確地各改一次
-- **根目錄的示範頁是模板的產物，不是正本**。要改版面或行為，改 `skills/*/assets/*.html` 再重新產生 `wordcloud.html`／`poll.html`；直接改示範頁下次重產就被蓋掉。技能改完別忘了跑 `/sync-skills` 才會更新到各 agent 的全域技能目錄
+- **每份互動頁的標誌以 base64 PNG 內嵌，同一張圖在 HTML 裡有兩份複本**：`<head>` 的 `<link rel="icon">`（瀏覽器分頁圖標）與頁首的 `<img class="logo-mark">`。換標誌時**兩處都要換**，只改一處會出現「分頁圖標和頁首標誌不一樣」的詭異狀態。內嵌是刻意的——單檔頁面不能依賴外部圖檔，換部署位置也不會破圖。母檔（512px PNG）在各技能的 `assets/logo.png`，由 `draw` 生成後去角圓化、降到 180px 並量化成 128 色才內嵌（未量化的 180px 會讓每頁多 40KB）
+- **兩個技能模板是各自獨立的程式碼**（`audience-wordcloud` 與 `audience-poll` 同源但分家）。一邊修 bug 不會流到另一邊；屬於「兩邊都該有」的性質（例如安全性修正、App Check 初始化順序），要明確地各改一次
+- **根目錄的示範頁是模板的產物，不是正本**。要改版面或行為，改 `skills/*/assets/*.html` 再重新產生 `wordcloud.html`／`poll.html`；直接改示範頁下次重產就被蓋掉。技能改完別忘了跑 `/skill-sync` 才會更新到各 agent 的全域技能目錄
 - **示範頁的 `demo_cloud_20260805`／`demo_poll_20260805` 是測試用 id，裡面有實測留下的資料。正式上課一律另外產生新頁面、換新 id**，沿用會讓兩批資料混在一起
 - **雲端硬碟會把已刪除的檔案同步回來。**根目錄若又冒出未追蹤的 `index.html`／`index.css`／`app.js`，那是已刪除的 Cloudify 正式站殘檔（指向死掉的頂層 `words` 集合），**直接刪不必猶豫**；內容留在 git 歷史的 460ddea，真要考古用 `git show 460ddea^:app.js`
-- **技能安裝是逐台的，四個全域技能目錄不會跨機同步。**「已安裝」永遠要問「哪一台」——唯一真相是 `我的雲端硬碟/agents/.skill-install/<電腦名>.json`，而那份清單只有該台自己跑 `/sync-skills` 時才更新。在 handoff 或筆記寫「已同步到四家」時**務必標明電腦名**，否則下一台會以為自己也有（實測：階段十四在 `PC-YI-SL` 完成，`NB-YI` 隔天才發現根本沒裝）
+- **技能安裝是逐台的，四個全域技能目錄不會跨機同步。**「已安裝」永遠要問「哪一台」——唯一真相是 `我的雲端硬碟/agents/.skill-install/<電腦名>.json`，而那份清單只有該台自己跑 `/skill-sync` 時才更新。在 handoff 或筆記寫「已同步到四家」時**務必標明電腦名**，否則下一台會以為自己也有（實測：階段十四在 `PC-YI-SL` 完成，`NB-YI` 隔天才發現根本沒裝）
 
 ## 工作約定
 - 任何 Agent、任何電腦：**開工先讀 `handoff.md`，收工必更新 `handoff.md`**

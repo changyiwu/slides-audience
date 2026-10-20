@@ -1,5 +1,5 @@
 ---
-name: word-cloud-page
+name: audience-wordcloud
 description: |
   產生一份可獨立部署的「即時協作文字雲網頁」：觀眾用手機開頁面輸入一整段話，系統自動斷詞、累計詞頻，透過 Firebase Firestore 即時同步渲染成文字雲，並附排行榜、刪除自己的字詞、不雅字詞過濾、網址 QR Code。頁面右上角有管理者登入，講者登入後才能刪除個別字詞（含別人送出的）與清除全部資料。
 
@@ -9,7 +9,7 @@ description: |
 
   當使用者說「做一個文字雲網頁」「幫我生一份即時文字雲」「簡報要放文字雲讓學生掃 QR 輸入」「課堂互動文字雲」「詞頻收集頁面」「幫這份簡報加一個文字雲頁」，或要求任何觀眾即時輸入→匯集成文字雲的頁面時，使用此技能。
 
-  不要用於：離線的靜態文字雲圖片。（簡報內嵌的小型文字雲元件已於 2026-08-05 從 html-slide-builder 移除，統一改用本技能產生獨立頁。）
+  不要用於：離線的靜態文字雲圖片。（簡報內嵌的小型文字雲元件已於 2026-08-05 從 html-slides 移除，統一改用本技能產生獨立頁。）
 ---
 
 # 即時協作文字雲網頁產生器
@@ -26,7 +26,7 @@ description: |
 
 | 項目 | 怎麼確認 | 沒到位的處理 |
 |------|---------|-------------|
-| 安全規則已含 `match /clouds/{cloudId}/words/{word}` | 讀 `interactive-web-builder/firestore.rules` 或 Firebase Console → Firestore → 規則 | 見 `references/firestore-setup.md`，補上並部署 |
+| 安全規則已含 `match /clouds/{cloudId}/words/{word}` | 讀 `slides-audience/firestore.rules` 或 Firebase Console → Firestore → 規則 | 見 `references/firestore-setup.md`，補上並部署 |
 | 安全規則的 `/admin_auth/` 寫入條件已含 `== get(config/admin).data.passwordHash` | 同上 | 沒有這一段，**管理者登入會一律成功**（連錯的密碼也是），只是登入後每個刪除動作都失敗。見 `references/firestore-setup.md` |
 | Firebase 專案已啟用匿名登入 | Console → Authentication → Sign-in method → Anonymous | 開啟它 |
 | 部署網域已註冊在 reCAPTCHA／App Check／API key referrer | 部署到 `changyiwu.github.io` 就已經涵蓋，不必再設 | 換新網域見 `references/firestore-setup.md` 的「換網域要改四處」 |
@@ -42,7 +42,7 @@ description: |
 | `CLOUD_ID` | 這份文字雲的資料夾名，決定資料存哪。只能英數／底線／連字號，最長 40 字，**不同場次要不同 id，否則資料會混在一起** | `ai_workshop_1104` |
 | `PAGE_TITLE` | 頁面標題，瀏覽器分頁與左上角都用它 | `AI 教學工作坊` |
 | `PROMPT` | 給觀眾看的一句提問或說明 | `聽完這段，你想到哪些關鍵字？` |
-| 輸出位置 | 檔案要放進哪個 repo 的哪個路徑 | `html-slide-builder/output/ai_workshop/wordcloud.html` |
+| 輸出位置 | 檔案要放進哪個 repo 的哪個路徑 | `slides-html/output/ai_workshop/wordcloud.html` |
 
 `CLOUD_ID` 命名建議：`<主題>_<場次或日期>`。同一份簡報要收集兩題，就開兩個 id（`xxx_q1`、`xxx_q2`），各自一頁。
 

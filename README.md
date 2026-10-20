@@ -1,20 +1,20 @@
-# interactive-web-builder ☁️📊
+# slides-audience ☁️📊
 
-聽眾即時互動網頁的**技能倉庫**。給定參數就產生一份可獨立部署的單檔 HTML，讓其他專案（例如 `html-slide-builder` 的簡報）放一張 QR Code 連過去，聽眾用手機參與、講者投影結果。
+聽眾即時互動網頁的**技能倉庫**。給定參數就產生一份可獨立部署的單檔 HTML，讓其他專案（例如 `slides-html` 的簡報）放一張 QR Code 連過去，聽眾用手機參與、講者投影結果。
 
 | 技能 | 產出 | 資料位置 |
 |------|------|---------|
-| `word-cloud-page` | 即時文字雲頁（自動斷詞、詞頻、排行榜、管理員清空） | `clouds/<cloudId>/words/` |
-| `poll-page` | 即時投票頁（圓餅／長條／折線／雷達圖表） | `polls/<pollId>/votes/` |
+| `audience-wordcloud` | 即時文字雲頁（自動斷詞、詞頻、排行榜、管理員清空） | `clouds/<cloudId>/words/` |
+| `audience-poll` | 即時投票頁（圓餅／長條／折線／雷達圖表） | `polls/<pollId>/votes/` |
 
 兩者共用同一個 Firebase 專案與同一份 `firestore.rules`，各走各的路徑，互不干擾；**每產生一份頁面就給一個 id，新增時不必改規則、不必重新部署**。
 
 產出的互動頁放在**呼叫端專案的資料夾**，本 repo 只留模板。根目錄的 `wordcloud.html`／`poll.html` 是這個 repo 自己的示範頁：
 
-- <https://changyiwu.github.io/interactive-web-builder/wordcloud.html>
-- <https://changyiwu.github.io/interactive-web-builder/poll.html>
+- <https://changyiwu.github.io/slides-audience/wordcloud.html>
+- <https://changyiwu.github.io/slides-audience/poll.html>
 
-> 2026-08-05 起，原本的 Cloudify 文字雲正式站（`index.html`／`app.js`）已刪除——`word-cloud-page` 技能能開無限份彼此隔離的文字雲，單一固定站沒有存在必要。
+> 2026-08-05 起，原本的 Cloudify 文字雲正式站（`index.html`／`app.js`）已刪除——`audience-wordcloud` 技能能開無限份彼此隔離的文字雲，單一固定站沒有存在必要。
 
 ## ✨ 產出頁面的特色
 
@@ -133,12 +133,12 @@ Firebase Console 的 App Check 設定。
 ## 📝 專案結構
 
 ```text
-interactive-web-builder/
+slides-audience/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml      # GitHub Actions 部署工作流
-├── wordcloud.html          # 示範頁：由 word-cloud-page 技能產生
-├── poll.html               # 示範頁：由 poll-page 技能產生
+├── wordcloud.html          # 示範頁：由 audience-wordcloud 技能產生
+├── poll.html               # 示範頁：由 audience-poll 技能產生
 ├── skills/
 │   ├── word-cloud-page/    # 技能：產生獨立的即時文字雲頁
 │   │   ├── SKILL.md
