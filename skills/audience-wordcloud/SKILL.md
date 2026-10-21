@@ -50,7 +50,7 @@ description: |
 
 ## 2. 產生頁面
 
-複製本技能的 `assets/word-cloud-page.html` 到目標位置，取代三個占位符：
+複製本技能的 `assets/audience-wordcloud.html` 到目標位置，取代三個占位符：
 
 - `{{CLOUD_ID}}`
 - `{{PAGE_TITLE}}`（出現兩次：`<title>` 與左上角）
@@ -59,7 +59,7 @@ description: |
 PowerShell：
 
 ```powershell
-$src = Get-Content "<技能目錄>/assets/word-cloud-page.html" -Raw
+$src = Get-Content "<技能目錄>/assets/audience-wordcloud.html" -Raw
 $out = $src.Replace('{{CLOUD_ID}}','ai_workshop_1104').Replace('{{PAGE_TITLE}}','AI 教學工作坊').Replace('{{PROMPT}}','聽完這段，你想到哪些關鍵字？')
 Set-Content -Path "<目標路徑>/wordcloud.html" -Value $out -Encoding utf8NoBOM
 ```

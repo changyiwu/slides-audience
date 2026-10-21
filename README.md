@@ -37,7 +37,7 @@
 
 ### 1. 產生一份互動頁
 
-依 `skills/word-cloud-page/SKILL.md` 或 `skills/poll-page/SKILL.md` 的流程：複製 `assets/` 下的單檔模板到目標位置，取代占位符（`CLOUD_ID`／`POLL_ID`、標題、提問、選項），部署後把網址做成 QR Code。
+依 `skills/audience-wordcloud/SKILL.md` 或 `skills/audience-poll/SKILL.md` 的流程：複製 `assets/` 下的單檔模板到目標位置，取代占位符（`CLOUD_ID`／`POLL_ID`、標題、提問、選項），部署後把網址做成 QR Code。
 
 ### 2. 本地預覽
 
@@ -140,13 +140,13 @@ slides-audience/
 ├── wordcloud.html          # 示範頁：由 audience-wordcloud 技能產生
 ├── poll.html               # 示範頁：由 audience-poll 技能產生
 ├── skills/
-│   ├── word-cloud-page/    # 技能：產生獨立的即時文字雲頁
+│   ├── audience-wordcloud/    # 技能：產生獨立的即時文字雲頁
 │   │   ├── SKILL.md
-│   │   ├── assets/word-cloud-page.html      # 單檔模板
+│   │   ├── assets/audience-wordcloud.html      # 單檔模板
 │   │   └── references/firestore-setup.md
-│   └── poll-page/          # 技能：產生獨立的即時投票頁（含統計圖表）
+│   └── audience-poll/          # 技能：產生獨立的即時投票頁（含統計圖表）
 │       ├── SKILL.md
-│       ├── assets/poll-page.html            # 單檔模板
+│       ├── assets/audience-poll.html            # 單檔模板
 │       └── references/firestore-setup.md
 ├── tools/
 │   └── set-admin-password.mjs  # 產生管理密碼與 SHA-256 雜湊

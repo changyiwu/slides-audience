@@ -55,8 +55,8 @@
 - `wordcloud.html` / `poll.html`：本 repo 的示範／測試頁，由兩個技能產生
   （`demo_cloud_20260805`／`demo_poll_20260805`）；要改請改技能模板再重新產生
 - `tools/set-admin-password.mjs`：產生管理密碼與 SHA-256 雜湊
-- `skills/word-cloud-page/`：文字雲頁技能原始檔（`SKILL.md`、`assets/word-cloud-page.html` 單檔模板、`assets/logo.png` 標誌母檔、`references/firestore-setup.md`）
-- `skills/poll-page/`：投票頁技能原始檔（同樣結構，模板為 `assets/poll-page.html`，標誌母檔為 `assets/logo.png`）
+- `skills/audience-wordcloud/`：文字雲頁技能原始檔（`SKILL.md`、`assets/audience-wordcloud.html` 單檔模板、`assets/logo.png` 標誌母檔、`references/firestore-setup.md`）
+- `skills/audience-poll/`：投票頁技能原始檔（同樣結構，模板為 `assets/audience-poll.html`，標誌母檔為 `assets/logo.png`）
 - `.firebaserc` / `firebase.json`：Firebase 專案配置
 - `.github/workflows/deploy.yml`：GitHub Actions 部署腳本
 - `AGENTS.md`：專案藍圖（本檔）

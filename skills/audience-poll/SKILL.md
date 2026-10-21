@@ -79,7 +79,7 @@ description: |
 
 ## 2. 產生頁面
 
-複製本技能的 `assets/poll-page.html` 到目標位置，取代四個占位符：`{{POLL_ID}}`、`{{PAGE_TITLE}}`、`{{INTRO}}`、`{{QUESTIONS_JSON}}`。
+複製本技能的 `assets/audience-poll.html` 到目標位置，取代四個占位符：`{{POLL_ID}}`、`{{PAGE_TITLE}}`、`{{INTRO}}`、`{{QUESTIONS_JSON}}`。
 
 ```powershell
 $q = @'
@@ -88,7 +88,7 @@ $q = @'
     options: [ { id: 'a', label: '學會用 AI 備課' }, { id: 'b', label: '知道怎麼設計互動' } ] }
 ]
 '@
-$src = Get-Content "<技能目錄>/assets/poll-page.html" -Raw
+$src = Get-Content "<技能目錄>/assets/audience-poll.html" -Raw
 $out = $src.Replace('{{POLL_ID}}','ai_workshop_1104').
             Replace('{{PAGE_TITLE}}','課後回饋投票').
             Replace('{{INTRO}}','請針對下面各題投票，結果會即時更新。').
